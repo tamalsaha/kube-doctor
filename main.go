@@ -29,14 +29,10 @@ func main() {
 		glog.Fatalln(err)
 	}
 
-	fmt.Println(info)
-}
-
-func extractVersion(kc kubernetes.Interface, info *ClusterInfo) error {
-	v, err := kc.Discovery().ServerVersion()
+	err = extractVersion(kc, &info)
 	if err != nil {
-		return err
+		glog.Fatalln(err)
 	}
-	info.Version = v
-	return err
+
+	fmt.Println(info)
 }
