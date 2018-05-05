@@ -29,7 +29,7 @@ func main() {
 		glog.Fatalln(err)
 	}
 
-	err = extractVersion(kc, &info)
+	err = extractMasterIPs(kc, &info)
 	if err != nil {
 		glog.Fatalln(err)
 	}

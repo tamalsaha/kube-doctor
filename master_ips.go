@@ -1,63 +1,30 @@
 package main
 
 import (
-	core "k8s.io/api/core/v1"
-	kerr "k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/apimachinery/pkg/labels"
-	"net"
-	"sort"
-	"bytes"
-	"crypto/md5"
-	"encoding/hex"
-	"io/ioutil"
-	"strings"
-	"bytes"
-	"crypto/md5"
-	"encoding/hex"
 	"errors"
 	"io/ioutil"
 	"net"
 	"net/http"
-	"os"
-	"sort"
 	"strings"
 	"time"
 
-	"github.com/appscode/go/analytics"
-	"github.com/appscode/kutil/meta"
 	"github.com/ghodss/yaml"
 	core "k8s.io/api/core/v1"
-	kerr "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/labels"
-	"k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
-	"errors"
-	"net/http"
-	"time"
 )
 
 func extractMasterIPs(kc kubernetes.Interface, info *ClusterInfo) error {
+	if err := tryGKE(info); err == nil {
+		return nil
+	}
+
 	nodes, err := kc.CoreV1().Nodes().List(metav1.ListOptions{
 		LabelSelector: "node-role.kubernetes.io/master",
 	})
 	if err != nil {
-		return reasonForError(err)
+		return err
 	}
-	if len(nodes.Items) == 0 {
-		nodes, err = client.CoreV1().Nodes().List(metav1.ListOptions{
-			LabelSelector: labels.SelectorFromSet(map[string]string{
-				"kubernetes.io/hostname": "minikube",
-			}).String(),
-		})
-		if err != nil {
-			return reasonForError(err)
-		}
-	}
-
 	ips := make([]net.IP, 0, len(nodes.Items))
 	for _, node := range nodes.Items {
 		ip := nodeIP(node)
@@ -65,12 +32,22 @@ func extractMasterIPs(kc kubernetes.Interface, info *ClusterInfo) error {
 			ips = append(ips, ip)
 		}
 	}
-	sort.Slice(ips, func(i, j int) bool { return bytes.Compare(ips[i], ips[j]) < 0 })
-	hasher := md5.New()
-	for _, ip := range ips {
-		hasher.Write(ip)
+	info.MasterIPs = ips
+	return nil
+}
+
+func nodeIP(node core.Node) []byte {
+	for _, addr := range node.Status.Addresses {
+		if addr.Type == core.NodeExternalIP {
+			return ipBytes(net.ParseIP(addr.Address))
+		}
 	}
-	return hex.EncodeToString(hasher.Sum(nil))
+	for _, addr := range node.Status.Addresses {
+		if addr.Type == core.NodeInternalIP {
+			return ipBytes(net.ParseIP(addr.Address))
+		}
+	}
+	return nil
 }
 
 func ipBytes(ip net.IP) []byte {
@@ -88,62 +65,48 @@ func ipBytes(ip net.IP) []byte {
 	return nil
 }
 
-func reasonForError(err error) string {
-	switch t := err.(type) {
-	case kerr.APIStatus:
-		return "$k8s$err$" + string(t.Status().Reason)
-	}
-	return "$k8s$err$" + trim(err.Error(), 32) // 32 = length of uuid
-}
-
 // Product file path that contains the cloud service name.
 // This is a variable instead of a const to enable testing.
 var gceProductNameFile = "/sys/class/dmi/id/product_name"
 
 // ref: https://cloud.google.com/compute/docs/storing-retrieving-metadata
-func tryGKE() (string, error) {
+func tryGKE(info *ClusterInfo) error {
 	// ref: https://github.com/kubernetes/kubernetes/blob/a0f94123616c275f94e7a5b680d60d6f34e92f37/pkg/credentialprovider/gcp/metadata.go#L115
 	data, err := ioutil.ReadFile(gceProductNameFile)
 	if err != nil {
-		return "", err
+		return err
 	}
 	name := strings.TrimSpace(string(data))
 	if name != "Google" && name != "Google Compute Engine" {
-		return "", errors.New("not GKE")
+		return errors.New("not GKE")
 	}
 
 	client := &http.Client{Timeout: time.Millisecond * 100}
 	req, err := http.NewRequest(http.MethodGet, "http://metadata.google.internal/computeMetadata/v1/instance/attributes/kube-env", nil)
 	if err != nil {
-		return "", err
+		return err
 	}
 	req.Header.Set("Metadata-Flavor", "Google")
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", err
+		return err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		return err
 	}
 	content := make(map[string]interface{})
 	err = yaml.Unmarshal(body, &content)
 	if err != nil {
-		return "", err
+		return err
 	}
 	v, ok := content["KUBERNETES_MASTER_NAME"]
 	if !ok {
-		return "", errors.New("missing  KUBERNETES_MASTER_NAME")
+		return errors.New("missing  KUBERNETES_MASTER_NAME")
 	}
 	masterIP := v.(string)
-	hashed := md5.Sum([]byte(masterIP))
-	return hex.EncodeToString(hashed[:]), nil
-}
 
-func trim(s string, length int) string {
-	if len(s) > length {
-		return s[:length]
-	}
-	return s
+	info.MasterIPs = []string{masterIP}
+	return nil
 }
