@@ -19,15 +19,6 @@
   version = "v9.9.0"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/appscode/go"
-  packages = [
-    "context",
-    "log"
-  ]
-  revision = "437df2b94ce2ea60464ff580c10462fbeb3e8f52"
-
-[[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
   revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
@@ -71,12 +62,6 @@
   name = "github.com/google/gofuzz"
   packages = ["."]
   revision = "24818f796faf91cd76ec7bddd72458fbced7a6c1"
-
-[[projects]]
-  name = "github.com/google/uuid"
-  packages = ["."]
-  revision = "064e2069ce9c359c118179501254f67d7d37ba24"
-  version = "0.2"
 
 [[projects]]
   name = "github.com/googleapis/gnostic"
@@ -125,12 +110,6 @@
   packages = ["."]
   revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
   version = "v1.0.0"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/tamalsaha/go-oneliners"
-  packages = ["."]
-  revision = "07e2db8e47517e35639c1e719ea850cc3ad696bc"
 
 [[projects]]
   branch = "master"
@@ -368,18 +347,9 @@
   revision = "23781f4d6632d88e869066eaebb743857aa1ef9b"
   version = "v7.0.0"
 
-[[projects]]
-  name = "k8s.io/kube-aggregator"
-  packages = [
-    "pkg/apis/apiregistration",
-    "pkg/apis/apiregistration/v1beta1"
-  ]
-  revision = "adfe041e31889bef412f2105d246e549f824ca92"
-  version = "kubernetes-1.10.0"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "81b53f25562e4d53d5470656a1b472de57175ebe4804eef5614826d3dca80d43"
+  inputs-digest = "29dc98c56727612dd0bed9abfcd1cc0c32320e97249374a38bd54d7f9d0a3285"
   solver-name = "gps-cdcl"
   solver-version = 1
