@@ -32,7 +32,7 @@ func extractMasterIPs(kc kubernetes.Interface, info *ClusterInfo) error {
 			ips = append(ips, ip)
 		}
 	}
-	info.MasterIPs = ips
+	info.Master.IPs = ips
 	return nil
 }
 
@@ -107,6 +107,6 @@ func tryGKE(info *ClusterInfo) error {
 	}
 	masterIP := v.(string)
 
-	info.MasterIPs = []string{masterIP}
+	info.Master.IPs = []string{masterIP}
 	return nil
 }

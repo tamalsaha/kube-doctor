@@ -12,6 +12,8 @@ import (
 )
 
 func main() {
+	var info ClusterInfo
+
 	masterURL := ""
 	kubeconfigPath := filepath.Join(homedir.HomeDir(), ".kube", "config")
 
@@ -20,9 +22,12 @@ func main() {
 		glog.Fatalf("Could not get Kubernetes config: %s", err)
 	}
 
-	kc := kubernetes.NewForConfigOrDie(config)
+	err = extractKubeCA(config, &info)
+	if err != nil {
+		glog.Fatalln(err)
+	}
 
-	var info ClusterInfo
+	kc := kubernetes.NewForConfigOrDie(config)
 
 	err = extractVersion(kc, &info)
 	if err != nil {

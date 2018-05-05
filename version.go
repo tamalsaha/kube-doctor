@@ -7,6 +7,6 @@ func extractVersion(kc kubernetes.Interface, info *ClusterInfo) error {
 	if err != nil {
 		return err
 	}
-	info.Version = v
+	info.Version = *v
 	return err
 }

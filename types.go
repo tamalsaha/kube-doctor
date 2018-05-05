@@ -6,8 +6,14 @@ import (
 )
 
 type ClusterInfo struct {
-	Version   *version.Info `json:"version"`
-	MasterIPs []string      `json:"masterIPs"`
+	Version version.Info `json:"version"`
+	Master  MasterInfo    `json:"master"`
+}
+
+type MasterInfo struct {
+	IPs      []string `json:"ips"`
+	CABundle []byte   `json:"caBundle"`
+	Insecure bool     `json:"insecure"`
 }
 
 func (c ClusterInfo) String() string {
