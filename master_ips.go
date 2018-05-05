@@ -25,10 +25,10 @@ func extractMasterIPs(kc kubernetes.Interface, info *ClusterInfo) error {
 	if err != nil {
 		return err
 	}
-	ips := make([]net.IP, 0, len(nodes.Items))
+	ips := make([]string, 0, len(nodes.Items))
 	for _, node := range nodes.Items {
 		ip := nodeIP(node)
-		if ip != nil {
+		if ip != "" {
 			ips = append(ips, ip)
 		}
 	}
@@ -36,7 +36,7 @@ func extractMasterIPs(kc kubernetes.Interface, info *ClusterInfo) error {
 	return nil
 }
 
-func nodeIP(node core.Node) []byte {
+func nodeIP(node core.Node) string {
 	for _, addr := range node.Status.Addresses {
 		if addr.Type == core.NodeExternalIP {
 			return ipBytes(net.ParseIP(addr.Address))
@@ -47,22 +47,22 @@ func nodeIP(node core.Node) []byte {
 			return ipBytes(net.ParseIP(addr.Address))
 		}
 	}
-	return nil
+	return ""
 }
 
-func ipBytes(ip net.IP) []byte {
+func ipBytes(ip net.IP) string {
 	if ip == nil {
-		return nil
+		return ""
 	}
 	v4 := ip.To4()
 	if v4 != nil {
-		return v4
+		return v4.String()
 	}
 	v6 := ip.To16()
 	if v6 != nil {
-		return v6
+		return v6.String()
 	}
-	return nil
+	return ""
 }
 
 // Product file path that contains the cloud service name.
