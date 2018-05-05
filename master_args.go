@@ -29,6 +29,18 @@ func extractMasterArgs(kc kubernetes.Interface) error {
 }
 
 func findMasterPods(kc kubernetes.Interface) ([]core.Pod, error) {
+	pods, err := findMasterPodsByLabel(kc)
+	if err != nil {
+		return nil, err
+	}
+	if len(pods) > 0 {
+		return pods, nil
+	}
+
+	return findMasterPodsByKubernetesService(kc)
+}
+
+func findMasterPodsByLabel(kc kubernetes.Interface) ([]core.Pod, error) {
 	pods, err := kc.CoreV1().Pods(metav1.NamespaceSystem).List(metav1.ListOptions{
 		LabelSelector: labels.SelectorFromSet(labels.Set{
 			"component": "kube-apiserver",
@@ -37,15 +49,15 @@ func findMasterPods(kc kubernetes.Interface) ([]core.Pod, error) {
 	if err != nil {
 		return nil, err
 	}
-	if len(pods.Items) > 0 {
-		return pods.Items, nil
-	}
+	return pods.Items, nil
+}
 
+func findMasterPodsByKubernetesService(kc kubernetes.Interface) ([]core.Pod, error) {
 	ep, err := kc.CoreV1().Endpoints(core.NamespaceDefault).Get("kubernetes", metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
-	var podIPs sets.String
+	podIPs := sets.NewString()
 	for _, subnet := range ep.Subsets {
 		for _, addr := range subnet.Addresses {
 			podIPs.Insert(addr.IP)
@@ -60,14 +72,16 @@ func findMasterPods(kc kubernetes.Interface) ([]core.Pod, error) {
 		return nil, err
 	}
 
-	result := make([]core.Pod, 0, podIPs.Len())
+	pods := make([]core.Pod, 0, podIPs.Len())
 	err = meta.EachListItem(objects, func(obj runtime.Object) error {
 		pod, ok := obj.(*core.Pod)
 		if !ok {
 			return errors.Errorf("%v is not a pod", obj)
 		}
-		result = append(result, *pod)
+		if podIPs.Has(pod.Status.PodIP) {
+			pods = append(pods, *pod)
+		}
 		return nil
 	})
-	return result, err
+	return pods, err
 }
