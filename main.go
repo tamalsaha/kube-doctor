@@ -34,5 +34,10 @@ func main() {
 		glog.Fatalln(err)
 	}
 
+	err = extractMasterArgs(kc)
+	if err != nil {
+		glog.Fatalln(err)
+	}
+
 	fmt.Println(info)
 }

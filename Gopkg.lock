@@ -106,6 +106,12 @@
   version = "1.0.5"
 
 [[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
   name = "github.com/spf13/pflag"
   packages = ["."]
   revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
@@ -248,6 +254,7 @@
     "pkg/api/errors",
     "pkg/api/meta",
     "pkg/api/resource",
+    "pkg/apis/meta/internalversion",
     "pkg/apis/meta/v1",
     "pkg/apis/meta/v1/unstructured",
     "pkg/apis/meta/v1beta1",
@@ -336,6 +343,7 @@
     "tools/clientcmd/api/latest",
     "tools/clientcmd/api/v1",
     "tools/metrics",
+    "tools/pager",
     "tools/reference",
     "transport",
     "util/cert",
@@ -350,6 +358,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "29dc98c56727612dd0bed9abfcd1cc0c32320e97249374a38bd54d7f9d0a3285"
+  inputs-digest = "8ec41996bd9bccd32121896b5efcb0552b78e4057aed8c94e57a7bac089d4996"
   solver-name = "gps-cdcl"
   solver-version = 1
