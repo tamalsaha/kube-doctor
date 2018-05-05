@@ -34,6 +34,11 @@ func main() {
 		glog.Fatalln(err)
 	}
 
+	err = extractRequestheaderInfo(kc, &info)
+	if err != nil {
+		glog.Fatalln(err)
+	}
+
 	err = extractMasterIPs(kc, &info)
 	if err != nil {
 		glog.Fatalln(err)
