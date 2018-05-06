@@ -6,10 +6,10 @@ import (
 )
 
 type ClusterInfo struct {
-	Version       version.Info        `json:"version"`
-	ClientConfig  RestConfig          `json:"clientConfig"`
-	RequestHeader RequestHeaderConfig `json:"requestHeaderConfig"`
-	Master        []APIServerConfig   `json:"masters"`
+	Version      version.Info                     `json:"version"`
+	ClientConfig RestConfig                       `json:"clientConfig"`
+	Master       []APIServerConfig                `json:"masters"`
+	AuthConfig   ExtensionApiserverAuthentication `json:"extension-apiserver-authentication"`
 }
 
 type RestConfig struct {
@@ -28,6 +28,11 @@ type APIServerConfig struct {
 	RequestheaderClientCAData string
 	AllowPrivileged           bool
 	AuthorizationMode         []string
+}
+
+type ExtensionApiserverAuthentication struct {
+	ClientCA      string
+	RequestHeader *RequestHeaderConfig `json:"requestHeaderConfig"`
 }
 
 type RequestHeaderConfig struct {

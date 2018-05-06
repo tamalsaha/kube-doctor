@@ -22,6 +22,11 @@ func extractRequestheaderInfo(kc kubernetes.Interface, info *ClusterInfo) error 
 		return err
 	}
 
+	clientCA, ok := authConfigMap.Data["client-ca-file"]
+	if ok {
+		info.AuthConfig.ClientCA = clientCA
+	}
+
 	requestHeaderCA, ok := authConfigMap.Data["requestheader-client-ca-file"]
 	if !ok {
 		return nil
@@ -44,7 +49,7 @@ func extractRequestheaderInfo(kc kubernetes.Interface, info *ClusterInfo) error 
 		return err
 	}
 
-	info.RequestHeader = RequestHeaderConfig{
+	info.AuthConfig.RequestHeader = &RequestHeaderConfig{
 		UsernameHeaders:     usernameHeaders,
 		GroupHeaders:        groupHeaders,
 		ExtraHeaderPrefixes: extraHeaderPrefixes,
