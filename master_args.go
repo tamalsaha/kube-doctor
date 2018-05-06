@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/pkg/errors"
 	core "k8s.io/api/core/v1"
@@ -10,22 +9,28 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
+	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/pager"
 )
 
-func extractMasterArgs(kc kubernetes.Interface) error {
+func extractMasterArgs(cfg *rest.Config, kc kubernetes.Interface, info *ClusterInfo) error {
 	pods, err := findMasterPods(kc)
 	if err != nil {
 		return err
 	}
 
+	var errs []error
 	for _, pod := range pods {
-		fmt.Println(pod.Name)
+		if c, err := processPod(cfg, pod); err != nil {
+			errs = append(errs, err)
+		} else {
+			info.Master = append(info.Master, *c)
+		}
 	}
-
-	return nil
+	return utilerrors.NewAggregate(errs)
 }
 
 func findMasterPods(kc kubernetes.Interface) ([]core.Pod, error) {

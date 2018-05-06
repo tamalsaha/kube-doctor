@@ -7,20 +7,22 @@ import (
 
 type ClusterInfo struct {
 	Version       version.Info        `json:"version"`
-	Master        MasterInfo          `json:"master"`
+	ClientConfig  RestConfig          `json:"clientConfig"`
 	RequestHeader RequestHeaderConfig `json:"requestHeaderConfig"`
+	Master        []APIServerConfig   `json:"masters"`
 }
 
-type MasterInfo struct {
-	IPs      []string `json:"ips"`
-	CABundle string   `json:"caBundle"`
-	Insecure bool     `json:"insecure"`
+type RestConfig struct {
+	Host     string
+	CABundle string `json:"caBundle"`
+	Insecure bool   `json:"insecure"`
 }
 
 type APIServerConfig struct {
-	IP                        string
-	Name                      string
+	PodName                   string
 	NodeName                  string
+	PodIP                     string
+	HostIP                    string
 	AdmissionControl          []string
 	ClientCAData              string
 	RequestheaderClientCAData string

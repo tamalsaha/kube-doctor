@@ -39,12 +39,7 @@ func main() {
 		glog.Fatalln(err)
 	}
 
-	err = extractMasterIPs(kc, &info)
-	if err != nil {
-		glog.Fatalln(err)
-	}
-
-	err = extractMasterArgs(kc)
+	err = extractMasterArgs(config, kc, &info)
 	if err != nil {
 		glog.Fatalln(err)
 	}
