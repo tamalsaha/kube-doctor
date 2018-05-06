@@ -8,7 +8,7 @@ import (
 type ClusterInfo struct {
 	Version      version.Info                     `json:"version"`
 	ClientConfig RestConfig                       `json:"clientConfig"`
-	Master       []APIServerConfig                `json:"masters"`
+	APIServers   []APIServerConfig                `json:"apiServers"`
 	AuthConfig   ExtensionApiserverAuthentication `json:"extension-apiserver-authentication"`
 }
 

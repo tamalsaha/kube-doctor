@@ -27,7 +27,7 @@ func extractMasterArgs(cfg *rest.Config, kc kubernetes.Interface, info *ClusterI
 		if c, err := processPod(cfg, pod); err != nil {
 			errs = append(errs, err)
 		} else {
-			info.Master = append(info.Master, *c)
+			info.APIServers = append(info.APIServers, *c)
 		}
 	}
 	return utilerrors.NewAggregate(errs)
