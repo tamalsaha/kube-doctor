@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 
+	"strings"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
@@ -24,7 +26,7 @@ func extractRequestheaderInfo(kc kubernetes.Interface, info *ClusterInfo) error 
 
 	clientCA, ok := authConfigMap.Data["client-ca-file"]
 	if ok {
-		info.AuthConfig.ClientCA = clientCA
+		info.AuthConfig.ClientCA = strings.TrimSpace(clientCA)
 	}
 
 	requestHeaderCA, ok := authConfigMap.Data["requestheader-client-ca-file"]
@@ -53,7 +55,7 @@ func extractRequestheaderInfo(kc kubernetes.Interface, info *ClusterInfo) error 
 		UsernameHeaders:     usernameHeaders,
 		GroupHeaders:        groupHeaders,
 		ExtraHeaderPrefixes: extraHeaderPrefixes,
-		ClientCA:            requestHeaderCA,
+		ClientCA:            strings.TrimSpace(requestHeaderCA),
 		AllowedClientNames:  allowedNames,
 	}
 

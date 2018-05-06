@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/ghodss/yaml"
+	"github.com/pkg/errors"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/apimachinery/pkg/version"
 )
@@ -60,6 +61,29 @@ func (c ClusterInfo) String() string {
 
 func (c ClusterInfo) Validate() error {
 	var errs []error
+
+	{
+		if c.ClientConfig.Insecure {
+			errs = append(errs, errors.New("Admission webhooks can't be used when kube apiserver is accesible without verifying its TLS certificate (insecure-skip-tls-verify : true)."))
+		} else {
+			if c.AuthConfig.ClientCA == "" {
+				errs = append(errs, errors.Errorf(`"%s/%s" configmap is missing "client-ca-file" key.`, authenticationConfigMapNamespace, authenticationConfigMapName))
+			} else if c.ClientConfig.CABundle != c.AuthConfig.ClientCA {
+				errs = append(errs, errors.Errorf(`"%s/%s" configmap has mismatched "client-ca-file" key.`, authenticationConfigMapNamespace, authenticationConfigMapName))
+			}
+
+			for _, pod := range c.APIServers {
+				if pod.ClientCAData != c.ClientConfig.CABundle {
+					errs = append(errs, errors.Errorf(`pod "%s"" has mismatched "client-ca-file".`, pod.PodName))
+				}
+			}
+		}
+	}
+	{
+		if c.AuthConfig.RequestHeader == nil {
+			errs = append(errs, errors.Errorf(`"%s/%s" configmap is missing "requestheader-client-ca-file" key.`, authenticationConfigMapNamespace, authenticationConfigMapName))
+		}
+	}
 
 	return utilerrors.NewAggregate(errs)
 }
