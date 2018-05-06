@@ -83,6 +83,11 @@ func (c ClusterInfo) Validate() error {
 		if c.AuthConfig.RequestHeader == nil {
 			errs = append(errs, errors.Errorf(`"%s/%s" configmap is missing "requestheader-client-ca-file" key.`, authenticationConfigMapNamespace, authenticationConfigMapName))
 		}
+		for _, pod := range c.APIServers {
+			if pod.RequestheaderClientCAData != c.AuthConfig.RequestHeader.ClientCA {
+				errs = append(errs, errors.Errorf(`pod "%s"" has mismatched "requestheader-client-ca-file".`, pod.PodName))
+			}
+		}
 	}
 
 	return utilerrors.NewAggregate(errs)
