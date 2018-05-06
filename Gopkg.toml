@@ -53,6 +53,14 @@
   name = "k8s.io/client-go"
   version = "7.0.0"
 
+[[override]]
+  name = "github.com/Azure/azure-sdk-for-go"
+  version = "v12.4.0-beta"
+
+[[override]]
+  name = "github.com/Azure/go-autorest"
+  version = "v9.9.0"
+
 [prune]
   go-tests = true
   unused-packages = true

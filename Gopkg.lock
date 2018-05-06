@@ -15,8 +15,8 @@
     "autorest/azure",
     "autorest/date"
   ]
-  revision = "eaa7994b2278094c904d31993d26f56324db3052"
-  version = "v10.8.1"
+  revision = "fc3b03a2d2d1f43fad3007038bd16f044f870722"
+  version = "v9.10.0"
 
 [[projects]]
   branch = "master"
@@ -38,7 +38,7 @@
     "core/v1",
     "meta"
   ]
-  revision = "a0dbb0ca4e555448fc952bc1d2ecc32d1301eea6"
+  revision = "630bf7d39cbbb82fe0bc9f923bef26fa8876970a"
 
 [[projects]]
   branch = "master"
@@ -468,6 +468,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "171effbec14e24f9d813b6b3ec9f74799d567436c111c6dda0bc6d43d60b7921"
+  inputs-digest = "e897b5ae6d8734260708d545400b77acc381fabc970ad20e81beabe5efe91b8e"
   solver-name = "gps-cdcl"
   solver-version = 1

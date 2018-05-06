@@ -26,7 +26,7 @@ func processPod(cfg *rest.Config, pod core.Pod) (*APIServerConfig, error) {
 	container := pod.Spec.Containers[0]
 	args := map[string]string{}
 	if len(container.Command) > 1 {
-		if container.Args[0] != "kube-apiserver" {
+		if container.Command[0] != "kube-apiserver" {
 			return nil, errors.Errorf(`pod %s is using command %s, expected "kube-apiserver"`, pod.Name, container.Command[0])
 		}
 		args = meta.ParseArgumentListToMap(container.Command)
