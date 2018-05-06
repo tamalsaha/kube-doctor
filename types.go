@@ -4,6 +4,7 @@ import (
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
+	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apimachinery/pkg/version"
 )
 
@@ -89,6 +90,24 @@ func (c ClusterInfo) Validate() error {
 			}
 		}
 	}
-
+	{
+		for _, pod := range c.APIServers {
+			modes := sets.NewString(pod.AuthorizationMode...)
+			if !modes.Has("RBAC") {
+				errs = append(errs, errors.Errorf(`pod "%s"" does not enable RBAC authorization mode.`, pod.PodName))
+			}
+		}
+	}
+	{
+		for _, pod := range c.APIServers {
+			adms := sets.NewString(pod.AdmissionControl...)
+			if !adms.Has("MutatingAdmissionWebhook") {
+				errs = append(errs, errors.Errorf(`pod "%s"" does not enable MutatingAdmissionWebhook admission controller.`, pod.PodName))
+			}
+			if !adms.Has("ValidatingAdmissionWebhook") {
+				errs = append(errs, errors.Errorf(`pod "%s"" does not enable ValidatingAdmissionWebhook admission controller.`, pod.PodName))
+			}
+		}
+	}
 	return utilerrors.NewAggregate(errs)
 }
