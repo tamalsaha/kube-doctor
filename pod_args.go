@@ -60,15 +60,3 @@ func processPod(config *rest.Config, pod core.Pod) error {
 	}
 	return nil
 }
-
-/*
-    - --admission-control=Initializers,NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,NodeRestriction,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota
-
-    - --client-ca-file=/var/lib/localkube/certs/ca.crt
-    - --requestheader-client-ca-file=/var/lib/localkube/certs/front-proxy-ca.crt
-
-    - --allow-privileged=true
-    - --authorization-mode=Node,RBAC
-
-
-*/
