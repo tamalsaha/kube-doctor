@@ -44,5 +44,12 @@ func main() {
 		glog.Fatalln(err)
 	}
 
+	fmt.Println("-------------------------------------------------")
 	fmt.Println(info)
+	fmt.Println("-------------------------------------------------")
+
+	err = info.Validate()
+	if err != nil {
+		glog.Fatalln(err)
+	}
 }

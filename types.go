@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/ghodss/yaml"
+	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/apimachinery/pkg/version"
 )
 
@@ -55,4 +56,10 @@ func (c ClusterInfo) String() string {
 		panic(err)
 	}
 	return string(data)
+}
+
+func (c ClusterInfo) Validate() error {
+	var errs []error
+
+	return utilerrors.NewAggregate(errs)
 }
