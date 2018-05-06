@@ -19,10 +19,50 @@
   version = "v9.9.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/appscode/go"
+  packages = ["types"]
+  revision = "230e0e4622c682b5d117db8c28a66404ed874ed5"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/appscode/jsonpatch"
+  packages = ["."]
+  revision = "1359b374de83fa14fd58ab10aa8ea4935f84d249"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/appscode/kutil"
+  packages = [
+    ".",
+    "core/v1",
+    "meta"
+  ]
+  revision = "ed8d181d523ddd37e5cb7a23fa457b4c370a5140"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/appscode/mergo"
+  packages = ["."]
+  revision = "e3000cb3d28c72b837601cac94debd91032d19fe"
+
+[[projects]]
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
+  version = "v1.1.0"
+
+[[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
   revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
   version = "v3.1.0"
+
+[[projects]]
+  name = "github.com/evanphx/json-patch"
+  packages = ["."]
+  revision = "afac545df32f2287a079e2dfb7ba2745a643747e"
+  version = "v3.0.0"
 
 [[projects]]
   name = "github.com/ghodss/yaml"
@@ -56,6 +96,17 @@
   ]
   revision = "925541529c1fa6821df4e44ce2723319eb2be768"
   version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/google/go-cmp"
+  packages = [
+    "cmp",
+    "cmp/internal/diff",
+    "cmp/internal/function",
+    "cmp/internal/value"
+  ]
+  revision = "5411ab924f9ffa6566244a9e504bc347edacffd3"
 
 [[projects]]
   branch = "master"
@@ -112,10 +163,31 @@
   version = "v0.8.0"
 
 [[projects]]
+  name = "github.com/sergi/go-diff"
+  packages = ["diffmatchpatch"]
+  revision = "1744e2970ca51c86172c8190fadad617561ed6e7"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/spf13/pflag"
   packages = ["."]
   revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
   version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/yudai/gojsondiff"
+  packages = [
+    ".",
+    "formatter"
+  ]
+  revision = "0525c875b75ca60b9e67ddc44496aa16f21066b0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/yudai/golcs"
+  packages = ["."]
+  revision = "ecda9a501e8220fae3b4b600c3db4b0ba22cfc68"
 
 [[projects]]
   branch = "master"
@@ -277,15 +349,18 @@
     "pkg/util/framer",
     "pkg/util/intstr",
     "pkg/util/json",
+    "pkg/util/mergepatch",
     "pkg/util/net",
     "pkg/util/runtime",
     "pkg/util/sets",
+    "pkg/util/strategicpatch",
     "pkg/util/validation",
     "pkg/util/validation/field",
     "pkg/util/wait",
     "pkg/util/yaml",
     "pkg/version",
     "pkg/watch",
+    "third_party/forked/golang/json",
     "third_party/forked/golang/reflect"
   ]
   revision = "302974c03f7e50f16561ba237db776ab93594ef6"
@@ -355,9 +430,15 @@
   revision = "23781f4d6632d88e869066eaebb743857aa1ef9b"
   version = "v7.0.0"
 
+[[projects]]
+  branch = "master"
+  name = "k8s.io/kube-openapi"
+  packages = ["pkg/util/proto"]
+  revision = "f08db293d3ef80052d6513ece19792642a289fea"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8ec41996bd9bccd32121896b5efcb0552b78e4057aed8c94e57a7bac089d4996"
+  inputs-digest = "217c528ec168a5719ab41afd5b84aceb48252e2deb7f9279de0f42e298774d0f"
   solver-name = "gps-cdcl"
   solver-version = 1

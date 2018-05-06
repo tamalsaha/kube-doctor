@@ -17,6 +17,17 @@ type MasterInfo struct {
 	Insecure bool     `json:"insecure"`
 }
 
+type APIServerConfig struct {
+	IP                        string
+	Name                      string
+	NodeName                  string
+	AdmissionControl          []string
+	ClientCAData              string
+	RequestheaderClientCAData string
+	AllowPrivileged           bool
+	AuthorizationMode         []string
+}
+
 type RequestHeaderConfig struct {
 	// UsernameHeaders are the headers to check (in order, case-insensitively) for an identity. The first header with a value wins.
 	UsernameHeaders []string
